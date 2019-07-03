@@ -1,7 +1,9 @@
 # Arduino Terminal (WIP)
 
 Arduino Terminal is simple terminal (maybe communicating platform, computer?) written in C++, for Arduino. 
+
 Supports PS/2 keyboard and 16x2 LCD display (via I2C bus).
+
 Comes with some features, like:
   - send data via Serial 
   - recreive data from Serial
