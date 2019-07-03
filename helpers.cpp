@@ -1,21 +1,7 @@
-#include <LiquidCrystal_I2C.h>
-#include <MemoryFree.h>
-#include <PS2Keyboard.h>
+#include "helpers.h"
+#include <string.h>
 
-LiquidCrystal_I2C lcd(0x27, 20, 4);
-PS2Keyboard keyboard;
-
-
-int getSize(String data[]) {
-  int i = 0;
-  while (data[i] != NULL)
-    i++;
-  return i;
-}
-const String commands[] = {"free", "clear", "send"};
-const int commandsC = getSize(commands);
-
-void setup() {
+void init(){
   Serial.begin(9600);
   lcd.init();
   lcd.noAutoscroll();
@@ -24,6 +10,7 @@ void setup() {
   lcd.print(">");
   keyboard.begin(2, 3);
 }
+//splitting strings
 String split(String data) {
   int s = data.length();
   int c = 0;
@@ -34,28 +21,19 @@ String split(String data) {
     arr[a] = data.substring(0, data.indexOf(' '));
     data = data.substring(data.indexOf(' '));
   }
+  arr[0] = "";
   return arr;
 }
-
-void exec(String data, String args[]) {
-  String command = data.substring(0, data.indexOf(' '));
-  for (int i = 0; i < commandsC ; i++) {
-    if (String(commands[i]) == String(command)) {
-      switch (i) {
-        case 0: lcd.print(freeMemory()); lcd.print(" bytes"); break;
-        case 1: lcd.clear(); break;
-        case 2: Serial.println(args[0]); break;
-      }
-    }
-  }
+//get size of String array
+int getSize(String data[]) {
+  int i = 0;
+  while (data[i] != NULL)
+    i++;
+  return i;
 }
-
-
 String data;
 String tmp;
-void loop() {
-  lcd.setCursor(0, 0);
-  if (keyboard.available()) {
+void keyboard_handler(){
     char c = keyboard.read();
     Serial.print(c);
     String args*;
@@ -92,11 +70,11 @@ void loop() {
       case '\'': data += '\''; break;
       case '?': data += '?'; break;
     }
-  }
-  if (tmp != data) {
+    if (tmp != data) {
     tmp = data;
     lcd.setCursor(0, 1);
     lcd.print(">");
     lcd.print(data);
   }
 }
+
